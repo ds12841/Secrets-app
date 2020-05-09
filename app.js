@@ -25,7 +25,8 @@ const userSchema = new mongoose.Schema({
     email: String,
     password: String
 });
-
+const key="F!c@i#FdS#^c@P/^&*3n^U*&*&FcipFdScZP/3n!@#$^UFc*&^%$#ipFdScZP/3n^U";
+userSchema.plugin(encrypt,{secret:key, encryptedFields:["password"]});
 const User = new mongoose.model('user', userSchema);
 
 app.get('/', (req, res) => {
