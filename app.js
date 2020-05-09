@@ -1,3 +1,4 @@
+require('dotenv').config()
 const https = require('https');
 const http = require('http');
 const express = require('express');
@@ -25,8 +26,9 @@ const userSchema = new mongoose.Schema({
     email: String,
     password: String
 });
-const key="F!c@i#FdS#^c@P/^&*3n^U*&*&FcipFdScZP/3n!@#$^UFc*&^%$#ipFdScZP/3n^U";
-userSchema.plugin(encrypt,{secret:key, encryptedFields:["password"]});
+
+
+userSchema.plugin(encrypt,{secret:process.env.SECRET, encryptedFields:["password"]});
 const User = new mongoose.model('user', userSchema);
 
 app.get('/', (req, res) => {
@@ -53,6 +55,7 @@ app.post('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
     res.render('register');
+    
 });
 app.post('/register', (req, res) => {
     const newUser = new User({
@@ -68,6 +71,6 @@ app.post('/register', (req, res) => {
 
 });
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT, () => {
     console.log("Server is running on allocated port.");
 });
