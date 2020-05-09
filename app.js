@@ -6,8 +6,11 @@ const bp = require('body-parser');
 const ejs = require('ejs');
 const _ = require('lodash');
 const mongoose = require('mongoose');
-const encrypt = require('mongoose-encryption');
+//const encrypt = require('mongoose-encryption');
 const md5=require('md5');
+const bcrypt=require('bcrypt');
+
+const saltRounds=10;
 
 const app = express();
 
@@ -29,7 +32,7 @@ const userSchema = new mongoose.Schema({
 });
 
 
-userSchema.plugin(encrypt,{secret:process.env.SECRET , encryptedFields:["password"]});
+//userSchema.plugin(encrypt,{secret:process.env.SECRET , encryptedFields:["password"]});
 const User = new mongoose.model('user', userSchema);
 
 app.get('/', (req, res) => {
@@ -44,10 +47,18 @@ app.post('/login', (req, res) => {
     }, (err, response) => {
         if (!err) {
             if (response) {
-                if (response.password === req.body.password)
-                    res.render("secrets");
-                else
-                    res.send("invalid password");
+                bcrypt.compare(req.body.password,response.password,(err,result)=>{
+                    if(!err)
+                        if(result===true)
+                            res.render("secrets");
+                        else
+                            res.send("invalid password");
+                    else
+                        console.log(err)
+                });
+               
+
+
             } else res.send("not regis");
         } else
             res.send("err");
@@ -56,20 +67,22 @@ app.post('/login', (req, res) => {
 
 app.get('/register', (req, res) => {
     res.render('register');
-    
 });
 app.post('/register', (req, res) => {
-    const newUser = new User({
-        email: req.body.username,
-        password: md5(req.body.password) 
+    bcrypt.hash(req.body.password,saltRounds,(err,hash)=>{
+        const newUser = new User({
+            email: req.body.username,
+            password: hash 
+        });
+        newUser.save((err) => {
+            if (!err)
+                res.render("secrets");
+            else
+                res.send(err);
+        });
+    
     });
-    newUser.save((err) => {
-        if (!err)
-            res.render("secrets");
-        else
-            res.send(err);
-    })
-
+   
 });
 
 app.listen(process.env.PORT, () => {
