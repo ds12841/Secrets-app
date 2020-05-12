@@ -13,4 +13,26 @@ body {
   font-size: 2rem;
   color: #fff;
   background-color: #000;
+  font-family: 'Charmonman', cursive;
+  border-radius: 25px;
+  padding: 15px 0px ;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.formControl{
+  width :40px
+}
+#partitioned {
+  padding-left: 15px;
+  letter-spacing: 42px;
+  border: 0;
+  background-image: linear-gradient(to left, black 70%, rgba(255, 255, 255, 0) 0%);
+  background-position: bottom;
+  background-size: 50px 1px;
+  background-repeat: repeat-x;
+  background-position-x: 35px;
+  width: 300px;
 }
